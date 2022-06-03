@@ -225,7 +225,7 @@ if uploaded_file is not None:
         union = union.astype("string")
         union = union.fillna('')
         gc = gspread.service_account(filename='datacargar-947843f340e2.json')
-        sh = gc.open("pruebaborrar")
+        sh = gc.open("Gpon_ticket_WEB")
         #  el 0 simbol del numero de hoja en este caso es la primera hoja = 0
         worksheet = sh.get_worksheet(0)
         #borrar datos total y dejar encabezado
