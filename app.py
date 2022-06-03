@@ -70,7 +70,25 @@ if uploaded_file is not None:
         'desdtt','tiptecnologia','codtap','codbor','codtrtrn','desurb','nroplano','codnod','numtelefvoip','codpromo','tiplinea','codcli','BORRAR']
         Trouble2['AVERIAS']='Trouble'
 
-        #Trouble2.to_csv('AVERIAS/DT_AVERIAS_Trouble.csv',index=False)
+
+        Trouble2['fec_regist'] = pd.to_datetime(Trouble2.fec_regist, errors = 'coerce').dt.strftime("%Y/%m/%d  %H:%M:%S")
+        Trouble2 = Trouble2.fillna('')
+
+        gc = gspread.service_account(filename='datacargar-947843f340e2.json')
+        sh = gc.open("DT_AVERIAS_Trouble")
+
+        #  el 0 simbol del numero de hoja en este caso es la primera hoja = 0
+        worksheet = sh.get_worksheet(0)
+
+        #borrar datos total y dejar encabezado
+        worksheet.resize(rows=1)
+        worksheet.resize(rows=30)
+        #cargar datos df
+        worksheet.update([Trouble2.columns.values.tolist()] + Trouble2.values.tolist())
+
+        # ver datos de google sheet
+        dataframe = pd.DataFrame(worksheet.get_all_records())
+        print(dataframe)
 
 
 
