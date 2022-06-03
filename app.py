@@ -235,3 +235,43 @@ if uploaded_file is not None:
         worksheet.update([union.columns.values.tolist()] + union.values.tolist())
 
         st.write("SER CARGO CON EXITO CMS AHORA YA PUEDES ACTUALIZAR \n EL EXCEL DE LAS TABLAS DINAMICAS")
+
+## borrar nombres de la pagina
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+st.markdown(
+    """
+    <style>
+
+    header .css-1595djx e8zbici2{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    }
+
+    header .logo-text{
+        margin: 0;
+        padding: 10px 26px;
+        font-weight: bold;
+        color: rgb(60, 255, 0);
+        font-size: 0.8em;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    f"""
+    <header class="css-1595djx e8zbici2">
+        <p class="logo-text">App Alarmas 👨🏻‍💻Giancarlos .C</p>
+    </header>
+    """,
+    unsafe_allow_html=True
+)
