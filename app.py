@@ -87,8 +87,8 @@ if uploaded_file is not None:
         worksheet.update([Trouble2.columns.values.tolist()] + Trouble2.values.tolist())
 
         # ver datos de google sheet
-        dataframe = pd.DataFrame(worksheet.get_all_records())
-        print(dataframe)
+        #dataframe = pd.DataFrame(worksheet.get_all_records())
+        #print(dataframe)
 
 
 
@@ -99,3 +99,139 @@ if uploaded_file is not None:
     
     except Exception as e:
         print(e)
+        gc = gspread.service_account(filename='datacargar-947843f340e2.json')
+        sh = gc.open("DT_AVERIAS_Trouble")
+        #  el 0 simbol del numero de hoja en este caso es la primera hoja = 0
+        worksheet = sh.get_worksheet(0)
+        Trouble2 = pd.DataFrame(worksheet.get_all_records())
+        #print(Trouble2)
+        #Trouble2 = pd.read_csv('AVERIAS/DT_AVERIAS_Trouble.csv',sep=',')
+        warnings.simplefilter("ignore")
+        df = pd.read_excel(uploaded_file, dtype=str, engine='xlrd')
+
+        cms=df[['codreq','fec_regist','codedo','codctr','desnomctr','codmotv','desmotv','nomcli','desobsordtrab','destipvia','desnomvia','numvia','destipurb','codofcadm',
+        'desdtt','tiptecnologia','codtap','codbor','codtrtrn','desurb','nroplano','codnod','numtelefvoip','codpromo','tiplinea','codcli'
+        ]]
+        cms['AVERIAS']='CMS'
+        cms['BORRAR']=''
+        cms=pd.concat([Trouble2,cms],ignore_index=True)
+        #cms.to_csv('borrarrrr.csv',index=False, sep=";")
+        #print(cms)
+        profesiones=["DECO","TV","SEÑAL","TARJETA","REMOTO","CONTROL","CABLE","CANAL","HD","PIX","VISUA","PANTALL"]
+        cond=[cms['desobsordtrab'].str.contains(profesion,case=False).fillna(False) for profesion in profesiones]
+        cms['TV']=np.select(cond,profesiones,default = '')
+        profesiones=["NAVE","LENT","CORTE","INTER","POTEN","WI","IP","VELOC","NAT","DUO","TRIO","PARAM","TAP","ELECT","LEVAN","EGA","SPEED","ERNET","MASIV",
+        "LLEGA","SEÑA","SERVI","MODEM","LUCES","ROUT","CONECT","SRN","DOWN","REPET","NIVEL","RNET","NAEV","NAV","OFFLINE","SATURAC","MODEN",
+        "CLIENTE ACTIVO","RECOMIE","RUTINA","TRIAJE","SATUR","SNR","ANULAC","MAISVA","CLEAR","PEX","PAQUET","MASVIA","SIVA","MASVI","AMP","SE TRANS",
+        "INFANC","UP","M´DEM","MÓDEM","PORTADO","TOA","NVGA","PUERTO"]
+        cond=[cms['desobsordtrab'].str.contains(profesion,case=False).fillna(False) for profesion in profesiones]
+        cms['DATOS']=np.select(cond,profesiones,default = '')
+        profesiones=["LINEA","VOZ","VOLUMEN","TELEFO","LLAMA","FIJ","LOCU","RECIB","FONO","SALID","VOIP","CASILLA","TLF","REGISTR","REALIZA","LLAMDAS","MUERTA","MUERTO",
+        "TONO","MULTIDESTINO","LLMAR","TELF","IDENTIF","RUIDO","ESCUCHA"]
+        cond=[cms['desobsordtrab'].str.contains(profesion,case=False).fillna(False) for profesion in profesiones]
+        cms['VOZ']=np.select(cond,profesiones,default = '')
+        profesiones=["NAT","JUEGO","CAMARA","PUERTO","CAMBIO IP","CAMBIO DE IP","SERVIDOR"]
+        cond=[cms['desobsordtrab'].str.contains(profesion,case=False).fillna(False) for profesion in profesiones]
+        cms['CAMBIO_IP']=np.select(cond,profesiones,default = '')
+        #CAMBIAR todo lo encontrado y poner por puerto
+        cms['CAMBIO_IP'] = cms['CAMBIO_IP'].replace(profesiones,'PUERTO')
+        #Reordenar para ver TRUE O FALSE
+        cms["TV"] = cms["TV"].str.len() != 0
+        cms["TV"] = cms["TV"].replace({True:'TV',False:''}, regex=True)
+        cms["DATOS"] = cms["DATOS"].str.len() != 0
+        cms["DATOS"] = cms["DATOS"].replace({True:'DATOS',False:''}, regex=True)
+        cms["VOZ"] = cms["VOZ"].str.len() != 0
+        cms["VOZ"] = cms["VOZ"].replace({True:'VOZ',False:''}, regex=True)
+        cms["PRIORIDAD"] = cms['TV'] + " " + cms['DATOS'] + " " + cms['VOZ']
+        cms["PRIORIDAD"] = cms["PRIORIDAD"].str.lstrip()
+        cms["PRIORIDAD"] = cms["PRIORIDAD"].str.rstrip()
+        cms["PRIORIDAD"] = cms["PRIORIDAD"].replace({' ':'-'}, regex=True)
+        cms["PRIORIDAD"] = cms["PRIORIDAD"].replace({'--':'-'}, regex=True)
+        cms[['TV','DATOS','VOZ']] = cms[['TV','DATOS','VOZ']].replace(r'^\s*$', np.nan, regex=True)
+        cms['PRIORIDAD_2'] = np.where(cms['TV'].isna(), cms['DATOS'], cms['TV'])
+        cms['PRIORIDAD_2'] = np.where(cms['PRIORIDAD_2'].isna(), cms['VOZ'], cms['PRIORIDAD_2'])
+        #JUNTAR DE LA COLUMNA AL COSTADO
+        cms['PRIORIDAD_2'] = np.where(cms['PRIORIDAD_2'].isna(),
+                                cms['BORRAR'],
+                                cms['PRIORIDAD_2'])
+        cms[['PRIORIDAD','PRIORIDAD_2']] = cms[['PRIORIDAD','PRIORIDAD_2']].replace({'':'OTROS', np.nan:'OTROS'})
+        cms.rename(columns={'PRIORIDAD':'Total_Prioridad','PRIORIDAD_2':'Primera_Variable','PORT_ID':'Codigo_Gpon'},inplace=True)
+
+
+        #convertir columna a numero
+        regex = re.compile(r'[^0-9]') # Eliminamos todo lo que no sean números
+        cms['codcli']=cms['codcli'].replace(regex, '').fillna(0).apply(pd.to_numeric, errors='ignore')
+        #print("listo")
+        # EXTARER DATOS
+        gpontick = pd.read_csv('PLANTA_GPON/Gpon_ticket.csv', sep=',')
+        gpontick['SUBSCRIPCION']=gpontick['SUBSCRIPCION'].apply(pd.to_numeric, errors='ignore')
+        #print(gpontick)
+        #gpontick = pd.read_csv('PLANTA_GPON/Gpon_ticket.csv', sep=',')
+        union = pd.merge(left=cms,right=gpontick, how='left', left_on='codcli', right_on='SUBSCRIPCION')
+        union['Date'] = pd.to_datetime(union['fec_regist'], errors='coerce')
+        union['Date'] = union['Date'].dt.strftime('%B-%d')
+        #TODO tabla dinamica
+        uu  = pd.pivot_table(union, index=['OLT_ALIAS'], columns=['Date'], aggfunc='size')
+        ##################################################################
+        #uu.to_csv("EXPORTADO/ticket_averias.csv", sep=';')
+        #gpontick = pd.read_csv('EXPORTADO/ticket_averias.csv', sep=';')
+        #df1 = uu.iloc[3:-1, : ]
+        #aa = gpontick.drop(['Date'], axis=1)
+        #añss = (aa.columns)
+        #gpontick[añss] = gpontick[añss].fillna(0)
+        #gpontick[añss] = gpontick[añss].astype(int)
+        tb_olt = pd.read_csv('PLANTA_GPON/Tabla_dinamica_OLT.csv', sep=',')
+        #print(tb_olt)
+        #tb_olt = pd.read_csv('EXPORTADO/Tabla_dinamica_OLT.csv', sep=',')
+        #TODO sumar una tabla dinamica
+        gpontick = uu.apply(pd.to_numeric, downcast='signed',errors='ignore')
+        gpontick['Total'] = gpontick.sum(axis=1)
+        union2 = pd.merge(left=gpontick,right=tb_olt, how='left', left_on='OLT_ALIAS', right_on='OLT_ALIAS')
+        #TODO para dividir
+        #union2['formula'] = union2.Total / union2.value
+        #TODO para color
+        #df_style = union2.style.applymap(lambda x: 'color:blue', subset=["OLT_ALIAS"]) \
+        #.background_gradient(cmap="coolwarm",axis=None, vmin=0.0039, vmax=0.005, subset=["formula"])
+        #df_style
+        union = pd.merge(left=union,right=tb_olt, how='left', left_on='OLT_ALIAS', right_on='OLT_ALIAS')
+        union = union.rename(columns={'value':'Cliente',})
+        union['fec_regist'] = pd.to_datetime(union['fec_regist'], errors='coerce')
+        union['Year'] = union['fec_regist'].dt.year
+        union['Month'] = union['fec_regist'].dt.month
+        union['day'] = union['fec_regist'].dt.day
+        union = union.drop(['Date'], axis=1)
+        #gpontick=gpontick.drop([0])
+        #gpontick.to_csv("EXPORTADO/ticket_averias.csv", sep=';')
+        #TODO CRUCE CON OLT
+        df = pd.read_excel('NODO/NODO.xlsx')
+        #Trouble = pd.read_excel('OLT/OLT.xlsx')
+        df = df[['NODO','Descripcion','Nombre OLT']]
+        df = df[df['NODO'].notna()]
+        df = df.drop_duplicates(subset=['NODO'])
+        df = df.groupby(['NODO','Descripcion','Nombre OLT']).agg(NODO_size=('NODO', 'size')).reset_index()
+        ###########
+        #print(df)
+        #print(union)
+        union3 = pd.merge(left=union,right=df, how='left', left_on='codnod', right_on='NODO')
+        #print(union3)
+        union = union3.drop(['NODO','NODO_size'], axis=1)
+        union["tiptecnologia"] = union["tiptecnologia"].replace({'FTTH':'GPON'}, regex=True)
+        union = union.drop(['BORRAR','Nombre OLT'], axis=1)
+
+        union['fec_regist'] = pd.to_datetime(union.fec_regist, errors = 'coerce').dt.strftime("%Y/%m/%d  %H:%M:%S")
+
+        #convertir columna a numero
+        regex = re.compile(r'[^0-9]') # Eliminamos todo lo que no sean números
+        union = union.astype("string")
+        union = union.fillna('')
+        gc = gspread.service_account(filename='datacargar-947843f340e2.json')
+        sh = gc.open("pruebaborrar")
+        #  el 0 simbol del numero de hoja en este caso es la primera hoja = 0
+        worksheet = sh.get_worksheet(0)
+        #borrar datos total y dejar encabezado
+        worksheet.resize(rows=1)
+        worksheet.resize(rows=30)
+        #cargar datos df
+        worksheet.update([union.columns.values.tolist()] + union.values.tolist())
+
+        st.write("SER CARGO CON EXITO CMS AHORA YA PUEDES ACTUALIZAR \n EL EXCEL DE LAS TABLAS DINAMICAS")
