@@ -1,5 +1,5 @@
 pandas<1.2.0
-xlrd<2.0
+xrld==1.2.0 
 streamlit==1.9.0
 plotly==4.14.3
 Pillow==8.1.2
