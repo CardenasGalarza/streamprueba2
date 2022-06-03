@@ -234,7 +234,7 @@ if uploaded_file is not None:
         #cargar datos df
         worksheet.update([union.columns.values.tolist()] + union.values.tolist())
 
-        st.write("SER CARGO CON EXITO CMS AHORA YA PUEDES ACTUALIZAR \n EL EXCEL DE LAS TABLAS DINAMICAS")
+        st.write("SE CARGO CON EXITO CMS AHORA YA PUEDES ACTUALIZAR \n EL EXCEL DE LAS TABLAS DINAMICAS")
 
 ## borrar nombres de la pagina
 hide_streamlit_style = """
