@@ -5,6 +5,7 @@ import pandas as pd
 from os import devnull, sep
 import xlrd
 import warnings
+warnings.filterwarnings("ignore")
 import re
 import gspread
 # configuration
@@ -29,8 +30,8 @@ if uploaded_file is not None:
     print("hello")
 
     try:
-        df = pd.read_excel(uploaded_file, engine="openpyxl", skiprows=3)
-        df.to_csv('AVERIAS/DT_AVERIAS_Trouble.csv',index=False)
+        Trouble = pd.read_excel(uploaded_file, engine="openpyxl", skiprows=3)
+        #df.to_csv('AVERIAS/DT_AVERIAS_Trouble.csv',index=False)
 
         datos = {
             'CONTRATA_TOA__c': ['ANALISIS DE RUIDO PEX','ANOVO','CABECERA','COBRA','COMFICA','CUARENTENA COE','DOMINION','ENERGIA','EZENTIS','FIBRA','GAC-VOIP','INGENIERIA HFC',
@@ -45,7 +46,7 @@ if uploaded_file is not None:
         }
         df2 = pd.DataFrame(datos2)
         #print(df2)
-        Trouble = pd.read_csv('AVERIAS/DT_AVERIAS_Trouble.csv', sep=',', low_memory=False)
+        
         Trouble=Trouble[['Incident Number','CREATION_DATE_CRM__c','Tipo de incidencia padre','CONTRATA_TOA__c','Categorization Tier 3','CUSTOMER_NAME_CRM__c',
         'OBSERVATIONS_CRM__c','STREETTYPE_CRM__c','STREETNAME_CRM__c','STREETNUMBER_CRM__c','SUBUNITTYPE_CRM__c','DEPARTMENT_CRM','DISTRICT_CRM__c',
         'Network Technology__c','LEX_NIL__c','BORNE_NIL__c','TROBA_ TYPE_NIL__c','TAP_STREET_NIL__c','PLANE_OLT_PORT','NODE_HFC_OLT_HOSTNAME',
@@ -70,6 +71,10 @@ if uploaded_file is not None:
         Trouble2['AVERIAS']='Trouble'
 
         #Trouble2.to_csv('AVERIAS/DT_AVERIAS_Trouble.csv',index=False)
+
+
+
+
 
         st.write("SER CARGO CON EXITO Trouble Tickets")
         #st.write(df)
