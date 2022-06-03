@@ -11,7 +11,7 @@ st.subheader('Was the tutorial helpful?')
 
 
 
-df = pd.read_excel("Data.xlsx")
+df = pd.read_excel("Data.xlsx", engine='openpyxl')
 
 
 df = pd.DataFrame(df)
