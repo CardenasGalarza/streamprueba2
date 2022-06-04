@@ -9,19 +9,22 @@ warnings.filterwarnings("ignore")
 import re
 import gspread
 
+
 st.set_page_config(page_title='Gpon-Averias', page_icon="🌀", layout='centered', initial_sidebar_state='auto')
 
 
 # configuration
 st.set_option('deprecation.showfileUploaderEncoding', False)
 
-
+#para poner imagen
+st.sidebar.image("gponrun.png", use_column_width=True)
 
 # title of the app
 st.title("PROCESOS DE DATOS GPON")
 
 # Add a sidebar
 st.sidebar.subheader("Primero cargar Trouble Tickets")
+
 
 # Setup file upload
 uploaded_file = st.sidebar.file_uploader(
