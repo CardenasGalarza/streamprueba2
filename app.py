@@ -103,7 +103,10 @@ if uploaded_file is not None:
 
         st.write("SER CARGO CON EXITO Trouble Tickets")
         #st.write(df)
-    
+        # para ver la cantidad de registros
+        total = str(len(Trouble2))
+        st.info('Total de '+total+' Registros')
+
     except Exception as e:
         print(e)
         gc = gspread.service_account(filename='datacargar-947843f340e2.json')
@@ -119,6 +122,11 @@ if uploaded_file is not None:
         cms=df[['codreq','fec_regist','codedo','codctr','desnomctr','codmotv','desmotv','nomcli','desobsordtrab','destipvia','desnomvia','numvia','destipurb','codofcadm',
         'desdtt','tiptecnologia','codtap','codbor','codtrtrn','desurb','nroplano','codnod','numtelefvoip','codpromo','tiplinea','codcli'
         ]]
+        
+        # para ver la cantidad de registros
+        total = str(len(cms))
+        st.info('CMS total de '+total+' Registros')
+
         cms['AVERIAS']='CMS'
         cms['BORRAR']=''
         cms=pd.concat([Trouble2,cms],ignore_index=True)
@@ -241,7 +249,10 @@ if uploaded_file is not None:
         #cargar datos df
         worksheet.update([union.columns.values.tolist()] + union.values.tolist())
 
-        st.write("SE CARGO CON EXITO CMS AHORA YA PUEDES ACTUALIZAR \n EL EXCEL DE LAS TABLAS DINAMICAS")
+        st.write("SE CARGO CON EXITO AHORA YA PUEDES ACTUALIZAR \n EL EXCEL DE LAS TABLAS DINAMICAS")
+        # para ver la cantidad de registros
+        total = str(len(union))
+        st.info('Consolidado total de '+total+' Registros')
 
 ## borrar nombres de la pagina
 hide_streamlit_style = """
