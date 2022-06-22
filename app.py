@@ -28,6 +28,18 @@ name, authentication_status, username = authenticator.login("Login", "main")
 if authentication_status == False:
     st.error("Username/password is incorrect")
 
+        ## borrar nombres de la pagina
+    hide_streamlit_style = """
+                <style>
+                #MainMenu {visibility: hidden;}
+                footer {visibility: hidden;}
+                </style>
+                """
+    st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+
+    
+
 if authentication_status == None:
     st.warning("Please enter your username and password")
 
