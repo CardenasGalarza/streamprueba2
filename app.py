@@ -86,9 +86,9 @@ if authentication_status == None:
 if authentication_status:
 
     # ---- SIDEBAR ----
-    authenticator.logout("Logout", "sidebar")
-    st.sidebar.title(f"Welcome {name}")
-    st.sidebar.header("Please Filter Here:")
+    authenticator.logout("Cerrar sesión", "sidebar")
+    st.sidebar.title(f"Bienvenido {name}")
+    #st.sidebar.header("Please Filter Here:")
 
 
 
