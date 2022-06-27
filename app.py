@@ -154,7 +154,7 @@ if authentication_status:
             ]]
             #<<------------------------->>
             #comvertir año 1070-01-01 con  FECHA REAL
-            #Trouble['CREATION_DATE_CRM__c'] = pd.to_datetime(Trouble['CREATION_DATE_CRM__c'], errors='coerce', unit='d', origin='1899-12-30')
+            Trouble['CREATION_DATE_CRM__c'] = pd.to_datetime(Trouble['CREATION_DATE_CRM__c'], errors='coerce', unit='d', origin='1899-12-30')
             Trouble['CREATION_DATE_CRM__c'] = pd.to_datetime(Trouble.CREATION_DATE_CRM__c, errors = 'coerce').dt.strftime("%Y/%m/%d  %H:%M:%S")
             #concatenated_df=pd.concat([Trouble,cms],ignore_index=True)
             union1 = pd.merge(left=Trouble,right=df, how='left', left_on='CONTRATA_TOA__c', right_on='CONTRATA_TOA__c')
