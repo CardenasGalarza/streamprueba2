@@ -83,10 +83,10 @@ if authentication_status == None:
         unsafe_allow_html=True
     )
     texto  = ('🔒Estamos mejorando la privacidad de la información, si aún no cuentas con tus credenciales, comunicarte con:')
-    st.caption( f'<h6 style="color:#08298A;">{texto}</h6>', unsafe_allow_html=True )
+    st.caption( f'<h6 style="color:#FFFFFF;">{texto}</h6>', unsafe_allow_html=True )
 
     textoo = ('\n\n👨🏻‍💻Luis Llerena. \n\n👨🏻‍💻Giancarlos Cardenas.')
-    st.caption( f'<h6 style="color:#08298A;">{textoo}</h6>', unsafe_allow_html=True )
+    st.caption( f'<h6 style="color:#FFFFFF;">{textoo}</h6>', unsafe_allow_html=True )
     ###
     ####
     ####
@@ -347,6 +347,15 @@ if authentication_status:
             # para ver la cantidad de registros
             total = str(len(union))
             st.info('Consolidado total de '+total+' Registros')
+
+                        ## borrar nombres de la pagina
+            hide_streamlit_style = """
+                        <style>
+                        #MainMenu {visibility: hidden;}
+                        footer {visibility: hidden;}
+                        </style>
+                        """
+            st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 
     ## borrar nombres de la pagina
