@@ -411,3 +411,12 @@ div.stButton > button:first-child {{ border: 5px solid {primaryColor}; border-ra
 <style>
 """
 st.markdown(s, unsafe_allow_html=True)
+
+## borrar nombres de la pagina
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
