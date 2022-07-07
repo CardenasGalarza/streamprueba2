@@ -199,7 +199,7 @@ if authentication_status:
             #st.write(df)
             # para ver la cantidad de registros
             total = str(len(Trouble2))
-            st.info('Total de '+total+' Registros')
+            st.success('Total de '+total+' Registros')
 
         except Exception as e:
             print(e)
@@ -219,7 +219,7 @@ if authentication_status:
             
             # para ver la cantidad de registros
             total = str(len(cms))
-            st.info('CMS total de '+total+' Registros')
+            st.success('CMS total de '+total+' Registros')
 
             cms['AVERIAS']='CMS'
             cms['BORRAR']=''
@@ -346,7 +346,7 @@ if authentication_status:
             st.write("SE CARGO CON EXITO AHORA YA PUEDES ACTUALIZAR \n EL EXCEL DE LAS TABLAS DINAMICAS")
             # para ver la cantidad de registros
             total = str(len(union))
-            st.info('Consolidado total de '+total+' Registros')
+            st.success('Consolidado total de '+total+' Registros')
 
                         ## borrar nombres de la pagina
             hide_streamlit_style = """
